@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="az"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAM × Bank — Tərəfdaşlıq</title>
+<style>
+  deck-stage:not(:defined){visibility:hidden}
+  :root{
+    --type-hero: 92px;
+    --type-title: 62px;
+    --type-subtitle: 38px;
+    --type-body: 31px;
+    --type-small: 25px;
+    --pad-top: 86px;
+    --pad-bottom: 80px;
+    --pad-x: 110px;
+
+    --bg1: #16235C;
+    --bg2: #0A1033;
+    --ink: #FFFFFF;
+    --ink2: #DCE3FA;
+    --muted: #9AA6CF;
+    --card: rgba(255,255,255,.07);
+    --card-b: rgba(255,255,255,.12);
+    --g1: #3BA4F6; --g2: #5B6CF5; --g3: #7B5CF0;
+    --grad: linear-gradient(120deg, var(--g1), var(--g2) 55%, var(--g3));
+    --green: #3DDC97;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg2)}
+
+  section{background:radial-gradient(120% 90% at 85% 0%, #2B3C93 0%, var(--bg1) 38%, var(--bg2) 100%);color:var(--ink);overflow:hidden}
+  .slide{position:absolute;inset:0;padding:var(--pad-top) var(--pad-x) var(--pad-bottom);display:flex;flex-direction:column}
+
+  .kicker{font-size:var(--type-small);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8DB8FF}
+  .title{font-size:var(--type-title);font-weight:800;letter-spacing:-.02em;line-height:1.08;margin-top:18px}
+  .gt{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  .split{display:grid;grid-template-columns:1fr auto;gap:80px;flex:1;align-items:center;min-height:0}
+
+  .bullets{display:flex;flex-direction:column;gap:26px;margin-top:44px}
+  .bullet{display:flex;gap:22px;align-items:flex-start}
+  .bullet .dot{flex:none;width:14px;height:14px;border-radius:50%;background:var(--grad);margin-top:13px}
+  .bullet .b-title{font-size:var(--type-body);font-weight:700;line-height:1.3}
+  .bullet .b-sub{font-size:var(--type-small);color:var(--muted);line-height:1.4;margin-top:4px}
+
+  .phone{border-radius:48px;overflow:hidden;background:#000;border:10px solid #05081C;box-shadow:0 40px 80px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.08)}
+  .phone img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+  .ph-lg{width:400px;height:868px}
+  .ph-md{width:360px;height:782px}
+
+  .chip{display:inline-flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#CFDBFF;font-size:var(--type-small);font-weight:700;border-radius:100px;padding:12px 26px}
+  .chip.grad{background:var(--grad);border:0;color:#fff}
+
+  .card{background:var(--card);border:1px solid var(--card-b);border-radius:28px;padding:40px 40px}
+  .card h3{font-size:var(--type-body);font-weight:800}
+  .card p{font-size:var(--type-small);color:var(--muted);line-height:1.45;margin-top:12px}
+
+  .num{width:58px;height:58px;border-radius:18px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;flex:none}
+
+  /* mock widgets */
+  .widget{background:#fff;color:#101828;border-radius:30px;padding:34px 36px;box-shadow:0 30px 70px rgba(0,0,0,.4)}
+  .widget .lbl{font-size:21px;color:#667085;font-weight:600}
+  .widget .big{font-size:52px;font-weight:800;letter-spacing:-.02em}
+  .widget .row{display:flex;justify-content:space-between;align-items:center;font-size:23px;padding:14px 0;border-top:1px solid #EEF1F6}
+  .widget .btn{margin-top:22px;background:var(--grad);color:#fff;border-radius:18px;text-align:center;font-size:25px;font-weight:800;padding:20px}
+  .widget .note{font-size:18px;color:#98A2B3;margin-top:14px;text-align:center}
+
+  .footer-tag{position:absolute;left:var(--pad-x);bottom:34px;font-size:22px;color:#6F7BA8;font-weight:700;letter-spacing:.08em}
+  .footer-tag b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  table.phases{width:100%;border-collapse:separate;border-spacing:0 18px;margin-top:34px}
+  table.phases td{background:var(--card);border-top:1px solid var(--card-b);border-bottom:1px solid var(--card-b);padding:30px 34px;font-size:var(--type-small);color:var(--ink2);line-height:1.4;vertical-align:middle}
+  table.phases td:first-child{border-left:1px solid var(--card-b);border-radius:24px 0 0 24px;width:110px}
+  table.phases td:last-child{border-right:1px solid var(--card-b);border-radius:0 24px 24px 0;width:430px}
+  table.phases .t{font-size:var(--type-body);font-weight:800;color:#fff}
+  .pill{display:inline-block;border-radius:100px;padding:10px 22px;font-size:22px;font-weight:800}
+  .p-fast{background:rgba(61,220,151,.15);color:var(--green)}
+  .p-mid{background:rgba(59,164,246,.16);color:#8DCBFF}
+  .p-pilot{background:rgba(123,92,240,.2);color:#C3B3FF}
+
+  @media (prefers-reduced-motion: no-preference){
+    [data-deck-active] .rise{animation:rise .6s cubic-bezier(.2,.7,.3,1) both}
+    [data-deck-active] .rise.d1{animation-delay:.08s}
+    [data-deck-active] .rise.d2{animation-delay:.16s}
+    [data-deck-active] .rise.d3{animation-delay:.24s}
+    [data-deck-active] .rise.d4{animation-delay:.32s}
+    @keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+  }
+</style>
+</head>
+<body>
+
+<deck-stage width="1920" height="1080">
+
+  <!-- 1 TİTUL -->
+  <section data-label="Titul">
+    <div class="slide" style="flex-direction:row;align-items:center;gap:90px">
+      <div style="flex:1">
+        <div class="chip rise">Tərəfdaşlıq təklifi</div>
+        <h1 class="rise d1" style="font-size:150px;font-weight:900;letter-spacing:-.04em;line-height:1;margin-top:44px"><span class="gt">vam.</span> <span style="color:#6F7BA8;font-weight:300">×</span> Bank</h1>
+        <p class="rise d2" style="font-size:52px;font-weight:800;line-height:1.15;margin-top:40px;letter-spacing:-.01em">Avtomobil sahibinin bütün yolu —<br>bir tətbiqdə və bir bankla</p>
+        <div class="rise d3" style="display:flex;gap:16px;flex-wrap:wrap;margin-top:48px">
+          <span class="chip">Avtokredit</span>
+          <span class="chip">Ehtiyat hissələri taksitlə</span>
+          <span class="chip">Servis abunəliyi taksitlə</span>
+        </div>
+      </div>
+      <div class="phone ph-lg rise d2"><img src="img/home_dark.jpg" alt="VAM — ana ekran"></div>
+    </div>
+  </section>
+
+  <!-- 2 VAM NƏDİR -->
+  <section data-label="VAM nədir">
+    <div class="slide">
+      <div class="split">
+        <div>
+          <div class="kicker">VAM nədir</div>
+          <h2 class="title">Avtomobil üçün hər şey <span class="gt">bir yerdə</span></h2>
+          <div class="bullets">
+            <div class="bullet rise"><div class="dot"></div><div><div class="b-title">Maşın və moto elanları, salonlar, icarə, xüsusi texnika</div><div class="b-sub">Alıcı və satıcı bir platformada</div></div></div>
+            <div class="bullet rise d1"><div class="dot"></div><div><div class="b-title">Ehtiyat hissələri və hissə sorğuları</div><div class="b-sub">Tapmadınsa — sorğu qoy, mağazalar özləri təklif göndərir</div></div></div>
+            <div class="bullet rise d2"><div class="dot"></div><div><div class="b-title">Avtoservislərə zəngsiz onlayn yazılış</div><div class="b-sub">Servis kartları, iş saatları, boş vaxtlar</div></div></div>
+            <div class="bullet rise d3"><div class="dot"></div><div><div class="b-title">Süni intellekt</div><div class="b-sub">Şəkillərə görə mümkün təmir izlərini göstərir, satıcıya qiymət təklif edir</div></div></div>
+          </div>
+          <div class="rise d4" style="display:flex;gap:16px;margin-top:46px">
+            <span class="chip">App Store</span><span class="chip">Google Play</span><span class="chip">vam.az</span>
+          </div>
+        </div>
+        <div class="phone ph-lg rise d1"><img src="img/car116.jpg" alt="Avtomobil elanı"></div>
+      </div>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 3 ƏSAS İDEYA -->
+  <section data-label="Əsas ideya">
+    <div class="slide">
+      <div class="kicker">Əsas ideya</div>
+      <h2 class="title">Müştəri bir dəfə yox — <span class="gt">bütün sahiblik dövründə</span></h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:36px;margin-top:70px;flex:1;align-items:stretch">
+        <div class="card rise" style="display:flex;flex-direction:column;gap:24px">
+          <div class="num">1</div>
+          <div style="font-size:var(--type-small);color:#8DB8FF;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Alış</div>
+          <h3 style="font-size:44px">Avtokredit</h3>
+          <p>Maşını seçdiyi anda bank hazır kredit müraciəti alır</p>
+        </div>
+        <div class="card rise d1" style="display:flex;flex-direction:column;gap:24px">
+          <div class="num">2</div>
+          <div style="font-size:var(--type-small);color:#8DB8FF;font-weight:700;letter-spacing:.1em;text-transform:uppercase">İstismar</div>
+          <h3 style="font-size:44px">Ehtiyat hissələri taksitlə</h3>
+          <p>Tez-tez olan kiçik alışlar — bankın kartı ilə</p>
+        </div>
+        <div class="card rise d2" style="display:flex;flex-direction:column;gap:24px">
+          <div class="num">3</div>
+          <div style="font-size:var(--type-small);color:#8DB8FF;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Xidmət</div>
+          <h3 style="font-size:44px">İllik servis abunəliyi</h3>
+          <p>Servis paketi bir il üçün, ödəniş aylıq taksitlə</p>
+        </div>
+      </div>
+      <p class="rise d3" style="font-size:var(--type-body);font-weight:700;margin-top:44px;color:var(--ink2)">Bank müştərini maşın alanda qazanır və bütün istismar müddətində saxlayır.</p>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 4 AVTOKREDİT -->
+  <section data-label="Avtokredit">
+    <div class="slide">
+      <div class="split" style="grid-template-columns:1fr auto auto;gap:60px">
+        <div>
+          <div class="kicker">1 · Avtokredit</div>
+          <h2 class="title">Kredit — <span class="gt">elanın içində</span></h2>
+          <div class="bullets">
+            <div class="bullet rise"><div class="dot"></div><div><div class="b-title">Qiymətin altında aylıq ödəniş</div><div class="b-sub">«Kreditlə: ayda … ₼-dan» və bankın faizləri ilə kalkulyator</div></div></div>
+            <div class="bullet rise d1"><div class="dot"></div><div><div class="b-title">«Kreditə müraciət» düyməsi</div><div class="b-sub">Bank hazır müraciət alır: maşın, qiymət, alıcının telefonu — istifadəçinin razılığı ilə</div></div></div>
+            <div class="bullet rise d2"><div class="dot"></div><div><div class="b-title">Axtarışda kredit filtrləri</div><div class="b-sub">«Kreditlə mümkündür» və «aylıq ödəniş … ₼-dək»</div></div></div>
+            <div class="bullet rise d3"><div class="dot"></div><div><div class="b-title">Əməkdaşlıq modeli</div><div class="b-sub">Müraciətə görə (CPL), verilmiş kreditə görə (CPA) və ya «tərəfdaş bank» statusu</div></div></div>
+          </div>
+        </div>
+        <div class="widget rise d2" style="width:470px">
+          <div class="lbl">Changan Oshan X5 Plus · 2026</div>
+          <div class="big" style="margin-top:6px">27 800 ₼</div>
+          <div class="row" style="margin-top:18px"><span>İlkin ödəniş</span><b>20% · 5 560 ₼</b></div>
+          <div class="row"><span>Müddət</span><b>36 ay</b></div>
+          <div class="row"><span>İllik faiz</span><b>18%</b></div>
+          <div class="row" style="border-top:2px solid #E4E8F0"><span style="font-weight:700">Aylıq ödəniş</span><b style="font-size:34px;color:#5B6CF5">≈ 804 ₼</b></div>
+          <div class="btn">Kreditə müraciət</div>
+          <div class="note">Nümunə · faizlər bankın şərtlərinə görə</div>
+        </div>
+        <div class="phone ph-md rise d1"><img src="img/car116.jpg" alt="Avtomobil elanı"></div>
+      </div>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 5 EHTİYAT HİSSƏLƏRİ TAKSİTLƏ -->
+  <section data-label="Ehtiyat hissələri taksitlə">
+    <div class="slide">
+      <div class="split" style="grid-template-columns:1fr auto auto;gap:60px">
+        <div>
+          <div class="kicker">2 · Ehtiyat hissələri</div>
+          <h2 class="title">Hissələr — <span class="gt">taksitlə</span></h2>
+          <div class="bullets">
+            <div class="bullet rise"><div class="dot"></div><div><div class="b-title">Mərhələ 1 · «Taksit mümkündür» nişanı</div><div class="b-sub">Bankın taksit kartını qəbul edən mağazalar elanlarda seçilir. Ödəniş mağazada. İnteqrasiya demək olar ki, lazım deyil</div></div></div>
+            <div class="bullet rise d1"><div class="dot"></div><div><div class="b-title">Mərhələ 2 · Tətbiqdə taksitlə ödəniş</div><div class="b-sub">Alıcı 3–12 ay hissə-hissə ödəyir, mağaza pulu dərhal alır</div></div></div>
+            <div class="bullet rise d2"><div class="dot"></div><div><div class="b-title">Bank üçün</div><div class="b-sub">Yeni kartlar, tez-tez kiçik alışlar, mağazalar — ekvayrinq müştəriləri kimi</div></div></div>
+          </div>
+        </div>
+        <div class="widget rise d2" style="width:430px">
+          <div class="lbl">Bobin · Hyundai / Kia · Original</div>
+          <div class="big" style="margin-top:6px">60 ₼</div>
+          <div class="row" style="margin-top:18px"><span>3 ay</span><b>3 × 20 ₼</b></div>
+          <div class="row"><span>6 ay</span><b>6 × 10 ₼</b></div>
+          <div class="btn">Taksitlə al</div>
+          <div class="note">Nümunə · şərtlər bankla razılaşdırılır</div>
+        </div>
+        <div class="phone ph-md rise d1"><img src="img/parts.jpg" alt="Ehtiyat hissələri"></div>
+      </div>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 6 SERVİS ABUNƏLİYİ -->
+  <section data-label="Servis abunəliyi">
+    <div class="slide">
+      <div class="split" style="grid-template-columns:1fr auto;gap:70px">
+        <div>
+          <div class="kicker">3 · Servis abunəliyi · pilot</div>
+          <h2 class="title">İllik servis paketi — <span class="gt">aylıq taksitlə</span></h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:44px">
+            <div class="card rise" style="padding:30px 34px"><h3>Müştəri</h3><p>Xidmət ayrı-ayrı almaqdan ucuz, böyük birdəfəlik ödəniş yoxdur</p></div>
+            <div class="card rise d1" style="padding:30px 34px"><h3>Servis</h3><p>Müştəri bir il ona bağlıdır, ödəniş əvvəlcədən</p></div>
+            <div class="card rise d2" style="padding:30px 34px"><h3>Bank</h3><p>Uzun taksit, müştəri bankın kartına bağlıdır</p></div>
+            <div class="card rise d3" style="padding:30px 34px"><h3>VAM</h3><p>Hər abunədən komissiya və daimi istifadəçilər</p></div>
+          </div>
+          <p class="rise d4" style="font-size:var(--type-small);color:var(--muted);margin-top:30px;line-height:1.45">Başlanğıc: 3–5 tərəfdaş servislə pilot. Bank pulu servisə dərhal və ya qrafiklə ödəyir, müştəri taksiti bağlayır.</p>
+        </div>
+        <div style="display:flex;gap:40px;align-items:center">
+          <div class="widget rise d2" style="width:440px">
+            <div class="lbl">İllik servis paketi · nümunə</div>
+            <div style="font-size:22px;line-height:1.75;margin-top:14px;color:#344054">
+              ✓ 2 × yağ dəyişmə<br>✓ Kompüter diaqnostikası<br>✓ 2 × təkər montajı<br>✓ Yuma<br>✓ Təmirə endirim
+            </div>
+            <div class="row" style="margin-top:16px"><span>İl üçün</span><b>600 ₼</b></div>
+            <div class="row" style="border-top:2px solid #E4E8F0"><span style="font-weight:700">Ayda</span><b style="font-size:34px;color:#5B6CF5">12 × 50 ₼</b></div>
+            <div class="btn">Abunə ol</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 7 MƏRHƏLƏLƏR -->
+  <section data-label="Mərhələlər">
+    <div class="slide">
+      <div class="kicker">Mərhələlər</div>
+      <h2 class="title">Sürətli başlanğıc — <span class="gt">sonra genişlənmə</span></h2>
+      <table class="phases">
+        <tr class="rise">
+          <td><div class="num">1</div></td>
+          <td><div class="t">Avtokredit</div>Elanda kalkulyator, banka müraciət, kredit filtrləri</td>
+          <td><span class="pill p-fast">Sürətli</span><div style="margin-top:10px">Bizim işləmə + bankın müraciət API-si</div></td>
+        </tr>
+        <tr class="rise d1">
+          <td><div class="num">2</div></td>
+          <td><div class="t">Ehtiyat hissələri taksitlə</div>Əvvəl mağazalarda «Taksit mümkündür» nişanı, sonra tətbiqdə ödəniş</td>
+          <td><span class="pill p-mid">Orta</span><div style="margin-top:10px">Bankın ödəniş və taksit API-si</div></td>
+        </tr>
+        <tr class="rise d2">
+          <td><div class="num">3</div></td>
+          <td><div class="t">Servis abunəliyi taksitlə</div>3–5 servislə pilot, illik paketlər</td>
+          <td><span class="pill p-pilot">Pilot</span><div style="margin-top:10px">Servislərlə müqavilələrdən sonra</div></td>
+        </tr>
+      </table>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 8 NÖVBƏTİ ADDIMLAR -->
+  <section data-label="Növbəti addımlar">
+    <div class="slide">
+      <div class="split" style="grid-template-columns:1fr auto;gap:80px">
+        <div>
+          <div class="kicker">Növbəti addımlar</div>
+          <h2 class="title">Bankla <span class="gt">birlikdə razılaşdıraq</span></h2>
+          <div class="bullets">
+            <div class="bullet rise"><div class="dot"></div><div><div class="b-title">Onlayn müraciət və ilkin təsdiq üçün API</div></div></div>
+            <div class="bullet rise d1"><div class="dot"></div><div><div class="b-title">Taksit şərtləri: 3, 6 və 12 ay, mağaza üçün komissiya</div></div></div>
+            <div class="bullet rise d2"><div class="dot"></div><div><div class="b-title">Kiçik satıcıların qoşulması: mağazalar və servislər</div></div></div>
+            <div class="bullet rise d3"><div class="dot"></div><div><div class="b-title">Abunə üçün aylıq avtomatik ödəniş</div></div></div>
+            <div class="bullet rise d4"><div class="dot"></div><div><div class="b-title">Məsul şəxslər və pilotun başlama tarixi</div></div></div>
+          </div>
+        </div>
+        <div class="rise d2" style="text-align:center">
+          <div style="font-size:170px;font-weight:900;letter-spacing:-.05em;line-height:1" class="gt">vam.</div>
+          <div style="font-size:var(--type-subtitle);font-weight:800;margin-top:20px">Təşəkkür edirik!</div>
+          <div style="display:flex;gap:14px;justify-content:center;margin-top:34px">
+            <span class="chip">vam.az</span><span class="chip">App Store</span><span class="chip">Google Play</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</deck-stage>
+<script src="../deck-stage.js"></script>
+
+</body></html>
