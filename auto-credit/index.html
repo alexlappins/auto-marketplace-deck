@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="az"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAM — Elanda avtokredit</title>
+<style>
+  deck-stage:not(:defined){visibility:hidden}
+  :root{
+    --type-title: 60px;
+    --type-subtitle: 38px;
+    --type-body: 30px;
+    --type-small: 24px;
+    --pad-top: 84px;
+    --pad-bottom: 80px;
+    --pad-x: 110px;
+    --bg1: #16235C; --bg2: #0A1033;
+    --ink: #FFFFFF; --ink2: #DCE3FA; --muted: #9AA6CF;
+    --card: rgba(255,255,255,.07); --card-b: rgba(255,255,255,.12);
+    --g1: #3BA4F6; --g2: #5B6CF5; --g3: #7B5CF0;
+    --grad: linear-gradient(120deg, var(--g1), var(--g2) 55%, var(--g3));
+    --green: #3DDC97;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg2)}
+  section{background:radial-gradient(120% 90% at 85% 0%, #2B3C93 0%, var(--bg1) 38%, var(--bg2) 100%);color:var(--ink);overflow:hidden}
+  .slide{position:absolute;inset:0;padding:var(--pad-top) var(--pad-x) var(--pad-bottom);display:flex;flex-direction:column}
+  .kicker{font-size:var(--type-small);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8DB8FF}
+  .title{font-size:var(--type-title);font-weight:800;letter-spacing:-.02em;line-height:1.08;margin-top:16px}
+  .gt{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .split{display:grid;grid-template-columns:1fr auto;gap:80px;flex:1;align-items:center;min-height:0}
+  .bullets{display:flex;flex-direction:column;gap:24px;margin-top:40px}
+  .bullet{display:flex;gap:22px;align-items:flex-start}
+  .bullet .dot{flex:none;width:14px;height:14px;border-radius:50%;background:var(--grad);margin-top:12px}
+  .bullet .b-title{font-size:var(--type-body);font-weight:700;line-height:1.3}
+  .bullet .b-sub{font-size:var(--type-small);color:var(--muted);line-height:1.4;margin-top:4px}
+  .phone{border-radius:48px;overflow:hidden;background:#000;border:10px solid #05081C;box-shadow:0 40px 80px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.08)}
+  .phone img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+  .chip{display:inline-flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#CFDBFF;font-size:var(--type-small);font-weight:700;border-radius:100px;padding:12px 26px}
+  .card{background:var(--card);border:1px solid var(--card-b);border-radius:26px;padding:34px 36px}
+  .card h3{font-size:var(--type-body);font-weight:800}
+  .card p{font-size:var(--type-small);color:var(--muted);line-height:1.45;margin-top:10px}
+  .num{width:56px;height:56px;border-radius:18px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:27px;font-weight:800;color:#fff;flex:none}
+  .src{font-size:18px;color:#6F7BA8;margin-top:14px;line-height:1.35}
+  .stat{font-size:84px;font-weight:900;letter-spacing:-.03em;line-height:1}
+  .footer-tag{position:absolute;left:var(--pad-x);bottom:34px;font-size:22px;color:#6F7BA8;font-weight:700;letter-spacing:.08em}
+  .footer-tag b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* mock phone UI */
+  .mock{width:380px;height:800px;border-radius:50px;border:10px solid #05081C;background:linear-gradient(180deg,#1B2A6B,#0B1236);box-shadow:0 40px 80px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.08);overflow:hidden;position:relative;padding:62px 22px 22px;display:flex;flex-direction:column;gap:14px}
+  .mock .bar{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:110px;height:30px;border-radius:20px;background:#000}
+  .mock .h{font-size:22px;font-weight:800}
+  .mock .s{font-size:15px;color:#9AA6CF}
+  .mock .box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:16px 18px}
+  .mock .price{font-size:34px;font-weight:900;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .mock .credit{display:flex;justify-content:space-between;align-items:center;background:rgba(61,220,151,.12);border:1px solid rgba(61,220,151,.35);color:var(--green);border-radius:14px;padding:12px 16px;font-size:17px;font-weight:800}
+  .mock .btn{background:var(--grad);border-radius:16px;text-align:center;font-size:19px;font-weight:800;padding:16px;margin-top:auto}
+  .mock .row{display:flex;justify-content:space-between;font-size:16px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+  .mock .row b{font-weight:800}
+  .mock .slider{height:8px;border-radius:8px;background:rgba(255,255,255,.12);position:relative;margin:10px 0 4px}
+  .mock .slider i{position:absolute;left:0;top:0;bottom:0;border-radius:8px;background:var(--grad)}
+  .mock .field{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px 14px;font-size:16px;color:#DCE3FA}
+  .mock .field small{display:block;font-size:12px;color:#9AA6CF;margin-bottom:3px}
+  .mock .check{display:flex;gap:10px;font-size:14px;color:#DCE3FA;line-height:1.35;align-items:flex-start}
+  .mock .check i{flex:none;width:22px;height:22px;border-radius:7px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:14px;font-weight:900}
+  .mock .ok{width:96px;height:96px;border-radius:50%;background:rgba(61,220,151,.15);border:2px solid var(--green);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:50px;font-weight:900;margin:40px auto 8px}
+  .cap{font-size:var(--type-small);font-weight:800;text-align:center;margin-top:22px}
+  .cap span{display:block;font-size:19px;font-weight:600;color:var(--muted);margin-top:6px}
+
+  table.t{width:100%;border-collapse:collapse;margin-top:34px}
+  table.t th{font-size:20px;color:#8DB8FF;text-transform:uppercase;letter-spacing:.1em;text-align:left;padding:0 22px 14px}
+  table.t td{font-size:23px;color:var(--ink2);padding:18px 22px;border-top:1px solid var(--card-b);line-height:1.35;vertical-align:top}
+  table.t td:first-child{font-weight:800;color:#fff;white-space:nowrap}
+
+  @media (prefers-reduced-motion: no-preference){
+    [data-deck-active] .rise{animation:rise .6s cubic-bezier(.2,.7,.3,1) both}
+    [data-deck-active] .rise.d1{animation-delay:.08s}
+    [data-deck-active] .rise.d2{animation-delay:.16s}
+    [data-deck-active] .rise.d3{animation-delay:.24s}
+    [data-deck-active] .rise.d4{animation-delay:.32s}
+    @keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+  }
+</style>
+</head>
+<body>
+<deck-stage width="1920" height="1080">
+
+  <!-- 1 TİTUL -->
+  <section data-label="Titul">
+    <div class="slide" style="flex-direction:row;align-items:center;gap:90px">
+      <div style="flex:1">
+        <div class="chip rise">VAM × Bank · Avtokredit</div>
+        <h1 class="rise d1" style="font-size:120px;font-weight:900;letter-spacing:-.035em;line-height:1.02;margin-top:40px">Kredit —<br><span class="gt">elanın içində</span></h1>
+        <p class="rise d2" style="font-size:40px;font-weight:700;line-height:1.25;margin-top:36px;color:var(--ink2)">Necə işləyəcək və dünyada<br>bunu artıq kim edir</p>
+      </div>
+      <div class="phone rise d2" style="width:400px;height:868px"><img src="img/car116.jpg" alt="VAM — avtomobil elanı"></div>
+    </div>
+  </section>
+
+  <!-- 2 NİYƏ -->
+  <section data-label="Niyə">
+    <div class="slide">
+      <div class="kicker">Niyə</div>
+      <h2 class="title">Bank müştərini <span class="gt">qərar anında</span> qarşılayır</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:60px">
+        <div class="card rise" style="padding:44px">
+          <div style="font-size:var(--type-small);color:#FF9C8A;font-weight:800;letter-spacing:.1em;text-transform:uppercase">İndi</div>
+          <div class="bullets" style="margin-top:26px">
+            <div class="bullet"><div class="dot" style="background:#FF9C8A"></div><div class="b-title" style="font-weight:600">Alıcı maşını elanlarda seçir</div></div>
+            <div class="bullet"><div class="dot" style="background:#FF9C8A"></div><div class="b-title" style="font-weight:600">Sonra ayrıca bank axtarır, filialları gəzir</div></div>
+            <div class="bullet"><div class="dot" style="background:#FF9C8A"></div><div class="b-title" style="font-weight:600">Bank müştərini gec görür — rəqiblərlə birlikdə</div></div>
+          </div>
+        </div>
+        <div class="card rise d1" style="padding:44px;border-color:rgba(91,108,245,.55);background:rgba(91,108,245,.12)">
+          <div style="font-size:var(--type-small);color:var(--green);font-weight:800;letter-spacing:.1em;text-transform:uppercase">VAM ilə</div>
+          <div class="bullets" style="margin-top:26px">
+            <div class="bullet"><div class="dot"></div><div class="b-title" style="font-weight:600">Aylıq ödəniş elandaca görünür</div></div>
+            <div class="bullet"><div class="dot"></div><div class="b-title" style="font-weight:600">Müraciət bir düymə ilə, maşın məlumatları ilə birlikdə</div></div>
+            <div class="bullet"><div class="dot"></div><div class="b-title" style="font-weight:600">Bank müştərini birinci və ən isti anda alır</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 3 NECƏ İŞLƏYİR — EKRANLAR -->
+  <section data-label="Necə işləyir">
+    <div class="slide">
+      <div class="kicker">Necə işləyir</div>
+      <h2 class="title">Alıcı üçün — <span class="gt">4 addım</span></h2>
+      <div style="display:flex;gap:38px;justify-content:center;margin-top:34px;transform:scale(.86);transform-origin:top center">
+        <div class="rise">
+          <div class="mock"><div class="bar"></div>
+            <div style="height:210px;border-radius:18px;background:url(img/car116.jpg) center 22%/cover"></div>
+            <div class="h">Changan Oshan X5 Plus</div>
+            <div class="s">2026 · 1.5 L · Avtomat · Bakı</div>
+            <div class="price">27 800 ₼</div>
+            <div class="credit"><span>Kreditlə: ayda 804 ₼-dan</span><span>›</span></div>
+            <div class="btn" style="background:rgba(255,255,255,.1)">Zəng</div>
+          </div>
+          <div class="cap">1 · Elanda aylıq ödəniş<span>qiymətin altında</span></div>
+        </div>
+        <div class="rise d1">
+          <div class="mock"><div class="bar"></div>
+            <div class="h">Kredit kalkulyatoru</div>
+            <div class="s">Bankın faizləri ilə</div>
+            <div class="box">
+              <div class="row"><span>Qiymət</span><b>27 800 ₼</b></div>
+              <div style="font-size:15px;margin-top:12px;display:flex;justify-content:space-between"><span>İlkin ödəniş</span><b>5 560 ₼ · 20%</b></div>
+              <div class="slider"><i style="width:20%"></i></div>
+              <div style="font-size:15px;margin-top:12px;display:flex;justify-content:space-between"><span>Müddət</span><b>36 ay</b></div>
+              <div class="slider"><i style="width:60%"></i></div>
+              <div class="row" style="border:0;margin-top:8px"><span>İllik faiz</span><b>18%</b></div>
+            </div>
+            <div class="box" style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:17px;font-weight:700">Aylıq ödəniş</span><span class="price" style="font-size:30px">≈ 804 ₼</span></div>
+            <div class="btn">Kreditə müraciət</div>
+          </div>
+          <div class="cap">2 · Kalkulyator<span>ilkin ödəniş və müddət</span></div>
+        </div>
+        <div class="rise d2">
+          <div class="mock"><div class="bar"></div>
+            <div class="h">Müraciət</div>
+            <div class="s">Changan Oshan X5 Plus · 27 800 ₼</div>
+            <div class="field"><small>Ad, soyad</small>Elvin Məmmədov</div>
+            <div class="field"><small>Telefon</small>+994 50 ••• •• ••</div>
+            <div class="field"><small>Seçilmiş şərtlər</small>20% ilkin · 36 ay</div>
+            <div class="check" style="margin-top:6px"><i>✓</i><span>Məlumatlarımın banka ötürülməsinə razıyam</span></div>
+            <div class="btn">Göndər</div>
+          </div>
+          <div class="cap">3 · Razılıqla müraciət<span>məlumatlar avtomatik doldurulur</span></div>
+        </div>
+        <div class="rise d3">
+          <div class="mock"><div class="bar"></div>
+            <div class="h">Müraciətlərim</div>
+            <div class="ok">✓</div>
+            <div style="text-align:center;font-size:22px;font-weight:800">Müraciət banka göndərildi</div>
+            <div style="text-align:center;font-size:15px;color:#9AA6CF;line-height:1.4;padding:0 10px">Bank qısa müddətdə sizinlə əlaqə saxlayacaq</div>
+            <div class="box" style="margin-top:14px">
+              <div class="row"><span>Status</span><b style="color:var(--green)">Baxılır</b></div>
+              <div class="row" style="border:0"><span>Müraciət №</span><b>VAM-10482</b></div>
+            </div>
+          </div>
+          <div class="cap">4 · Bank əlaqə saxlayır<span>status tətbiqdə görünür</span></div>
+        </div>
+      </div>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 4 AXTARIŞ VƏ FİLTRLƏR -->
+  <section data-label="Axtarış">
+    <div class="slide">
+      <div class="split">
+        <div>
+          <div class="kicker">Axtarışda</div>
+          <h2 class="title">Kredit — <span class="gt">filtr kimi</span></h2>
+          <div class="bullets">
+            <div class="bullet rise"><div class="dot"></div><div><div class="b-title">«Kreditlə mümkündür» filtri</div><div class="b-sub">Yalnız bankın şərtlərinə uyğun maşınlar</div></div></div>
+            <div class="bullet rise d1"><div class="dot"></div><div><div class="b-title">«Aylıq ödəniş … ₼-dək»</div><div class="b-sub">Alıcı büdcəni qiymətlə yox, aylıq ödənişlə seçir</div></div></div>
+            <div class="bullet rise d2"><div class="dot"></div><div><div class="b-title">Kartlarda «Kredit» nişanı və aylıq məbləğ</div><div class="b-sub">Bankın brendi hər baxışda görünür</div></div></div>
+            <div class="bullet rise d3"><div class="dot"></div><div><div class="b-title">«Kredit kalkulyatoru — [Bank]»</div><div class="b-sub">Tərəfdaş bankın loqosu kalkulyatorda və müraciət formasında</div></div></div>
+          </div>
+        </div>
+        <div class="phone rise d1" style="width:390px;height:846px"><img src="img/explore.jpg" alt="Axtarış və filtrlər"></div>
+      </div>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 5 BANK NƏ ALIR -->
+  <section data-label="Bank nə alır">
+    <div class="slide">
+      <div class="kicker">İnteqrasiya</div>
+      <h2 class="title">Bank <span class="gt">hazır müraciət</span> alır</h2>
+      <div style="display:grid;grid-template-columns:1.15fr 1fr;gap:50px;margin-top:20px;flex:1">
+        <table class="t rise">
+          <tr><th>Blok</th><th>Məlumat</th></tr>
+          <tr><td>Maşın</td><td>Marka, model, il, yürüş, qiymət, elanın linki, şəkillər</td></tr>
+          <tr><td>Alıcı</td><td>Ad, telefon (təsdiqlənmiş nömrə)</td></tr>
+          <tr><td>Şərtlər</td><td>Seçilmiş ilkin ödəniş, müddət, aylıq məbləğ</td></tr>
+          <tr><td>Razılıq</td><td>Razılıq tarixi və vaxtı</td></tr>
+          <tr><td>ID</td><td>Unikal müraciət nömrəsi — hesabat üçün</td></tr>
+        </table>
+        <div style="display:flex;flex-direction:column;gap:22px;margin-top:34px">
+          <div class="card rise d1"><h3>Ötürmə yolu</h3><p>Bankın API-si ilə və ya ilk mərhələdə e-poçt / CRM inteqrasiyası ilə</p></div>
+          <div class="card rise d2"><h3>Bankdan geri</h3><p>Status: baxılır → təsdiq / imtina → kredit verildi. Alıcı statusu tətbiqdə görür</p></div>
+          <div class="card rise d3"><h3>Hesabat</h3><p>Ayda bir dəfə müraciət ID-ləri üzrə tutuşdurma</p></div>
+        </div>
+      </div>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 6 DÜNYA TƏCRÜBƏSİ -->
+  <section data-label="Dünya təcrübəsi">
+    <div class="slide">
+      <div class="kicker">Dünya təcrübəsi</div>
+      <h2 class="title">Bu model <span class="gt">artıq işləyir</span></h2>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:44px">
+        <div class="card rise"><div class="chip" style="font-size:19px;padding:8px 18px">ABŞ</div><h3 style="margin-top:18px">CarGurus</h3><p>2019-dan Capital One ilə ilkin təsdiq düyməsi elanda; sonra Chase, Westlake və başqa banklar qoşulub</p></div>
+        <div class="card rise d1"><div class="chip" style="font-size:19px;padding:8px 18px">Böyük Britaniya</div><h3 style="margin-top:18px">Auto Trader</h3><p>Hər elanda maliyyələşdirmə kalkulyatoru; aylıq ödənişə görə axtarış</p></div>
+        <div class="card rise d2"><div class="chip" style="font-size:19px;padding:8px 18px">Almaniya</div><h3 style="margin-top:18px">mobile.de</h3><p>Elanda onlayn avtokredit — ING ilə; Creditplus və başqa banklar tərəfdaşdır</p></div>
+        <div class="card rise d1" style="border-color:rgba(91,108,245,.55);background:rgba(91,108,245,.12)"><div class="chip" style="font-size:19px;padding:8px 18px">Qazaxıstan</div><h3 style="margin-top:18px">Kolesa.kz × Kaspi</h3><p>«Kreditlə» nişanı və aylıq ödəniş elanda; bankın qərarı Kaspi tətbiqində</p></div>
+        <div class="card rise d2"><div class="chip" style="font-size:19px;padding:8px 18px">Rusiya</div><h3 style="margin-top:18px">Avito × MTS Bank, Uralsib</h3><p>Fiziki şəxslərdən alınan maşına məqsədli kredit; banklar elandakı konkret maşına təklif verir</p></div>
+        <div class="card rise d3"><div class="chip" style="font-size:19px;padding:8px 18px">Rusiya</div><h3 style="margin-top:18px">Auto.ru × eKredit</h3><p>Bir müraciət — bir neçə bankdan cavab; dilerlər öz kredit formalarını qoşur</p></div>
+      </div>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 7 RƏQƏMLƏR -->
+  <section data-label="Rəqəmlər">
+    <div class="slide">
+      <div class="kicker">Rəqəmlər</div>
+      <h2 class="title">Alıcılar kredit <span class="gt">elanda axtarır</span></h2>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:44px">
+        <div class="card rise"><div class="stat gt">50%</div><p style="color:var(--ink2);font-size:25px">mobile.de-də alıcıların yarısı maliyyələşdirmə planlaşdırır</p><div class="src">Almaniya · mobile.de, 2024 (Autohaus)</div></div>
+        <div class="card rise d1"><div class="stat gt">40%</div><p style="color:var(--ink2);font-size:25px">dilerlərin kreditlərinin bu qədəri platformadakı xidmət olmadan baş tutmazdı</p><div class="src">Almaniya · mobile.de sorğusu, 2018</div></div>
+        <div class="card rise d2"><div class="stat gt">+46%</div><p style="color:var(--ink2);font-size:25px">işlənmiş maşın elanlarında kredit kalkulyatorundan istifadə artımı (2019-a nisbətən)</p><div class="src">Böyük Britaniya · Auto Trader, 2022</div></div>
+        <div class="card rise d1"><div class="stat gt">45%</div><p style="color:var(--ink2);font-size:25px">işlənmiş maşınların maliyyələşdirmə payı — rekord</p><div class="src">Böyük Britaniya · FLA, 2022</div></div>
+        <div class="card rise d2"><div class="stat gt">7 / 10</div><p style="color:var(--ink2);font-size:25px">yeni maşın kreditlə alınır</p><div class="src">Rusiya · RBC, 2026</div></div>
+        <div class="card rise d3"><div class="stat gt">5–7 bənd</div><p style="color:var(--ink2);font-size:25px">məqsədli avtokreditin faizi istehlak kreditindən bu qədər aşağıdır</p><div class="src">Rusiya · Avito məqsədli kredit, 2025–2026</div></div>
+      </div>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 8 QAZAXISTAN -->
+  <section data-label="Qazaxıstan nümunəsi">
+    <div class="slide">
+      <div class="kicker">Ən yaxın nümunə</div>
+      <h2 class="title">Qazaxıstan: <span class="gt">Kolesa.kz × Kaspi</span></h2>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:60px">
+        <div class="card rise"><div class="num">1</div><h3 style="margin-top:22px">Elanda nişan</h3><p>«Kreditlə» nişanı və aylıq ödənişin məbləği</p></div>
+        <div class="card rise d1"><div class="num">2</div><h3 style="margin-top:22px">Müraciət</h3><p>Alıcı elandan birbaşa bankın tətbiqinə keçir</p></div>
+        <div class="card rise d2"><div class="num">3</div><h3 style="margin-top:22px">Yoxlama</h3><p>Maşın platformanın məntəqəsində baxışdan keçir</p></div>
+        <div class="card rise d3"><div class="num">4</div><h3 style="margin-top:22px">Qərar</h3><p>Bankın qərarı tətbiqdə; minimal ilkin ödəniş 20%</p></div>
+      </div>
+      <p class="rise d4" style="font-size:var(--type-body);font-weight:700;margin-top:56px;color:var(--ink2);line-height:1.4">Platforma + bank = işlənmiş maşın üçün tam onlayn kredit.<br>VAM-da bunun üçün artıq hazır baza var: <span class="gt">süni intellektlə maşın yoxlaması və qiymət qiymətləndirməsi.</span></p>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 9 AZƏRBAYCAN -->
+  <section data-label="Azərbaycan">
+    <div class="slide">
+      <div class="kicker">Azərbaycan</div>
+      <h2 class="title">Bazar böyüyür — <span class="gt">fürsət açıqdır</span></h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;margin-top:56px">
+        <div class="card rise"><div class="stat gt">9,35 mlrd ₼</div><p style="color:var(--ink2);font-size:25px">istehlak kreditləri — bank portfelinin 31,1%-i</p><div class="src">AMB, 2025</div></div>
+        <div class="card rise d1"><div class="stat gt">+9,4%</div><p style="color:var(--ink2);font-size:25px">bankların kredit portfelinin 2025-ci ildə artımı</p><div class="src">AMB, 2025</div></div>
+        <div class="card rise d2" style="border-color:rgba(91,108,245,.55);background:rgba(91,108,245,.12)"><div class="stat" style="font-size:64px">1-ci</div><p style="color:var(--ink2);font-size:25px">elanın içində kredit verən bank — rəqiblərdən əvvəl müştərini tutur</p><div class="src">VAM ilə tərəfdaşlıq</div></div>
+      </div>
+      <div class="bullets" style="margin-top:50px">
+        <div class="bullet rise d3"><div class="dot"></div><div class="b-title" style="font-weight:600">Avtomobil, ehtiyat hissələri və servis — bir tətbiqdə: bank müştərini bütün sahiblik dövründə görür</div></div>
+      </div>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 10 MODEL -->
+  <section data-label="Əməkdaşlıq modeli">
+    <div class="slide">
+      <div class="kicker">Əməkdaşlıq modeli</div>
+      <h2 class="title">Bank <span class="gt">nəticəyə görə</span> ödəyir</h2>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:56px">
+        <div class="card rise"><div class="chip" style="font-size:19px;padding:8px 18px">CPL</div><h3 style="margin-top:20px">Müraciətə görə</h3><p>Hər göndərilmiş müraciət üçün sabit məbləğ</p></div>
+        <div class="card rise d1"><div class="chip" style="font-size:19px;padding:8px 18px">CPA</div><h3 style="margin-top:20px">Verilmiş kreditə görə</h3><p>Yalnız kredit verildikdə — məbləğin faizi və ya sabit məbləğ</p></div>
+        <div class="card rise d2"><div class="chip" style="font-size:19px;padding:8px 18px">Tərəfdaş</div><h3 style="margin-top:20px">«Tərəfdaş bank» statusu</h3><p>Aylıq sabit ödəniş: bankın loqosu kalkulyatorda, kartlarda və filtrlərdə</p></div>
+      </div>
+      <div class="card rise d3" style="margin-top:30px;border-color:rgba(91,108,245,.55);background:rgba(91,108,245,.12)">
+        <h3>Təklifimiz — qarışıq model</h3>
+        <p style="color:var(--ink2)">Müraciətə görə kiçik ödəniş + hər verilmiş kreditə görə bonus. Eksklüzivlik — ayrıca şərtlərlə.</p>
+      </div>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 11 PLAN -->
+  <section data-label="Başlama planı">
+    <div class="slide">
+      <div class="kicker">Başlama planı</div>
+      <h2 class="title">Razılaşmadan <span class="gt">pilota</span></h2>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:60px">
+        <div class="card rise"><div class="num">1</div><h3 style="margin-top:22px">Razılaşma</h3><p>Şərtlər, faizlər, ödəniş modeli, müqavilə</p></div>
+        <div class="card rise d1"><div class="num">2</div><h3 style="margin-top:22px">İnteqrasiya</h3><p>Bankın API-si və ya müraciətlərin CRM-ə ötürülməsi</p></div>
+        <div class="card rise d2"><div class="num">3</div><h3 style="margin-top:22px">İşləmə</h3><p>Kalkulyator, müraciət forması, filtrlər, statuslar — tətbiq və vam.az</p></div>
+        <div class="card rise d3"><div class="num">4</div><h3 style="margin-top:22px">Pilot</h3><p>1–2 ay, aylıq hesabat: müraciətlər, təsdiqlər, verilmiş kreditlər</p></div>
+      </div>
+      <div style="display:flex;gap:14px;margin-top:56px" class="rise d4">
+        <span class="chip">Bankdan lazım olan: API sənədləri</span><span class="chip">faiz şərtləri</span><span class="chip">məsul şəxs</span>
+      </div>
+      <div class="footer-tag"><b>vam.</b> × Bank</div>
+    </div>
+  </section>
+
+  <!-- 12 MƏNBƏLƏR -->
+  <section data-label="Mənbələr">
+    <div class="slide">
+      <div class="kicker">Mənbələr</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px 50px;margin-top:40px;font-size:21px;line-height:1.4;color:var(--ink2)">
+        <div><b>CarGurus × Capital One, Chase</b><div class="src" style="margin-top:2px">investors.cargurus.com · autoremarketing.com</div></div>
+        <div><b>Auto Trader UK — FLA 45%, kalkulyator +46%</b><div class="src" style="margin-top:2px">plc.autotrader.co.uk (press release, 2022)</div></div>
+        <div><b>mobile.de — 50% alıcı, 40% diler kreditləri</b><div class="src" style="margin-top:2px">autohaus.de (2018, 2024) · mobile.de/lp/autokredit</div></div>
+        <div><b>Kolesa.kz × Kaspi avtokredit</b><div class="src" style="margin-top:2px">kolesa.kz · guide.kaspi.kz/client/ru/auto_credit</div></div>
+        <div><b>Avito × MTS Bank, Uralsib</b><div class="src" style="margin-top:2px">akm.ru · riamo.ru · vbr.ru (2025–2026)</div></div>
+        <div><b>Auto.ru × eKredit, 7/10 yeni maşın kreditlə</b><div class="src" style="margin-top:2px">auto.ru/mag · companies.rbc.ru (2026)</div></div>
+        <div><b>Azərbaycan — kredit portfeli 2025</b><div class="src" style="margin-top:2px">Azərbaycan Mərkəzi Bankı (cbar.az)</div></div>
+      </div>
+      <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between">
+        <div><div style="font-size:120px;font-weight:900;letter-spacing:-.05em;line-height:1" class="gt">vam.</div><div style="font-size:var(--type-subtitle);font-weight:800;margin-top:10px">Təşəkkür edirik!</div></div>
+        <div style="display:flex;gap:14px"><span class="chip">vam.az</span><span class="chip">App Store</span><span class="chip">Google Play</span></div>
+      </div>
+    </div>
+  </section>
+
+</deck-stage>
+<script src="../deck-stage.js"></script>
+</body></html>
